@@ -21,7 +21,7 @@ if(NOT CLR_CMAKE_TARGET_APPLE AND NOT CLR_CMAKE_TARGET_ARCH_WASM AND NOT CLR_CMA
     add_definitions(-DFEATURE_READONLY_GS_COOKIE)
 endif()
 
-if(CLR_CMAKE_TARGET_ANDROID OR CLR_CMAKE_TARGET_OPENBSD)
+if(CLR_CMAKE_TARGET_ANDROID OR CLR_CMAKE_TARGET_OPENBSD OR CLR_CMAKE_TARGET_OPENHARMONY)
     # OpenBSD's ld.so cannot resolve native TLS relocations in shared objects and has no
     # __tls_get_addr, so the runtime must use emulated TLS (like Android).
     add_definitions(-DFEATURE_EMULATED_TLS)

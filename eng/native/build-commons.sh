@@ -6,9 +6,9 @@ initTargetDistroRid()
 
     local passedRootfsDir=""
 
-    # Only pass ROOTFS_DIR if cross is specified and the target platform is not Darwin that doesn't use rootfs
-    if [[ "$__CrossBuild" == 1 && "$platform" != "darwin" ]]; then
-        passedRootfsDir="$ROOTFS_DIR"
+    # OpenHarmony uses its NDK sysroot rather than a Linux distribution rootfs.
+    if [[ "$__CrossBuild" == 1 && "$__TargetOS" != "openharmony" && "$platform" != "darwin" ]]; then
+        passedRootfsDir="${ROOTFS_DIR:-}"
     fi
 
     initDistroRidGlobal "$__TargetOS" "$__TargetArch" "$passedRootfsDir"
@@ -48,7 +48,8 @@ check_prereqs()
 
 build_native()
 {
-    if [[ ! -e "$__RepoRootDir/artifacts/obj/_version.c" ]]; then
+    artifacts_obj_dir="${__ArtifactsObjDir:-$__RepoRootDir/artifacts/obj}"
+    if [[ ! -e "$artifacts_obj_dir/_version.c" ]]; then
         eval "$__RepoRootDir/eng/native/version/copy_version_files.sh"
     fi
 
@@ -111,7 +112,15 @@ build_native()
         cmakeArgs="-DCMAKE_SYSTEM_NAME=Darwin -DCMAKE_OSX_SYSROOT=macosx -DCMAKE_SYSTEM_VARIANT=maccatalyst $cmakeArgs"
     fi
 
-    if [[ "$targetOS" == android || "$targetOS" == linux-bionic ]]; then
+    if [[ "$targetOS" == openharmony ]]; then
+        : "${OHOS_TOOLCHAIN_FILE:?OHOS_TOOLCHAIN_FILE must point to the HarmonyOS CMake toolchain}"
+        : "${OHOS_ARCH:?OHOS_ARCH must be arm64-v8a or x86_64}"
+        : "${OHOS_API_LEVEL:?OHOS_API_LEVEL must be one of 15, 18, 20, 23, or 26}"
+        : "${OHOS_SYSROOT:?OHOS_SYSROOT must point to the HarmonyOS sysroot}"
+
+        # The official OHOS toolchain selects Clang and LLD.
+        __Compiler="default"
+    elif [[ "$targetOS" == android || "$targetOS" == linux-bionic ]]; then
         # Keep in sync with $(AndroidApiLevelMin) in Directory.Build.props in the repository rooot
         local ANDROID_API_LEVEL=24
         if [[ -z "$ANDROID_NDK_ROOT" ]]; then
@@ -605,7 +614,7 @@ if [[ "$__CrossBuild" == 1 ]]; then
     CROSSCOMPILE=1
     export CROSSCOMPILE
     # Darwin that doesn't use rootfs
-    if [[ -z "$ROOTFS_DIR" && "$platform" != "darwin" ]]; then
+    if [[ "$__TargetOS" != "openharmony" && -z "${ROOTFS_DIR:-}" && "$platform" != "darwin" ]]; then
         ROOTFS_DIR="$__RepoRootDir/.tools/rootfs/$__TargetArch"
         export ROOTFS_DIR
     fi

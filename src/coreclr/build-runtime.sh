@@ -92,7 +92,9 @@ __PgoOptDataPath=""
 __PgoOptimize=0
 __PortableBuild=1
 __ProjectDir="$__ProjectRoot"
-__RootBinDir="$__RepoRootDir/artifacts"
+if [[ -z "${__RootBinDir:-}" ]]; then
+    __RootBinDir="$__RepoRootDir/artifacts"
+fi
 __SignTypeArg=""
 __SkipConfigure=0
 __SkipRestore=""
@@ -116,7 +118,8 @@ if [[ "$__TargetOS" == "linux-bionic" ]]; then
     __ConfigTriplet="linux.$__TargetArch.$__BuildType"
 fi
 __BinDir="$__RootBinDir/bin/coreclr/$__ConfigTriplet"
-__ArtifactsObjDir="$__RepoRootDir/artifacts/obj"
+__ArtifactsObjDir="$__RootBinDir/obj"
+export __ArtifactsObjDir
 __ArtifactsIntermediatesDir="$__ArtifactsObjDir/coreclr"
 __IntermediatesDir="$__ArtifactsIntermediatesDir/$__ConfigTriplet"
 
@@ -154,7 +157,7 @@ export MSBUILDDEBUGPATH
 check_prereqs
 
 # Build the coreclr (native) components.
-__CMakeArgs="-DCLR_CMAKE_PGO_INSTRUMENT=$__PgoInstrument -DCLR_CMAKE_OPTDATA_PATH=$__PgoOptDataPath -DCLR_CMAKE_PGO_OPTIMIZE=$__PgoOptimize -DCLI_CMAKE_FALLBACK_OS=\"$__HostFallbackOS\" $__CMakeArgs"
+__CMakeArgs="-DCLR_ARTIFACTS_OBJ_DIR=$__ArtifactsObjDir -DCLR_CMAKE_PGO_INSTRUMENT=$__PgoInstrument -DCLR_CMAKE_OPTDATA_PATH=$__PgoOptDataPath -DCLR_CMAKE_PGO_OPTIMIZE=$__PgoOptimize -DCLI_CMAKE_FALLBACK_OS=\"$__HostFallbackOS\" $__CMakeArgs"
 
 if [[ "$__SkipConfigure" == 0 && "$__CodeCoverage" == 1 ]]; then
     __CMakeArgs="-DCLR_CMAKE_ENABLE_CODE_COVERAGE=1 $__CMakeArgs"

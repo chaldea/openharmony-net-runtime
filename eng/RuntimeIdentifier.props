@@ -19,6 +19,7 @@
     <!-- Detect linux flavors using __PortableTargetOS from the native script. -->
     <PortableOS Condition="'$(PortableOS)' == 'linux' and '$(__PortableTargetOS)' == 'linux-musl'">linux-musl</PortableOS>
     <PortableOS Condition="'$(PortableOS)' == 'linux' and '$(__PortableTargetOS)' == 'linux-bionic'">linux-bionic</PortableOS>
+    <PortableOS Condition="'$(PortableOS)' == 'openharmony'">linux-musl</PortableOS>
 
     <PortableTargetRid Condition="'$(PortableTargetRid)' == ''">$(PortableOS)-$(TargetArchitecture)</PortableTargetRid>
   </PropertyGroup>
@@ -47,7 +48,7 @@
     <Targetsillumos Condition="'$(TargetOS)' == 'illumos'">true</Targetsillumos>
     <TargetsSolaris Condition="'$(TargetOS)' == 'solaris'">true</TargetsSolaris>
     <TargetsHaiku Condition="'$(TargetOS)' == 'haiku'">true</TargetsHaiku>
-    <TargetsLinux Condition="'$(TargetOS)' == 'linux' or '$(TargetOS)' == 'android'">true</TargetsLinux>
+    <TargetsLinux Condition="'$(TargetOS)' == 'linux' or '$(TargetOS)' == 'android' or '$(TargetOS)' == 'openharmony'">true</TargetsLinux>
     <TargetsLinuxBionic Condition="'$(PortableOS)' == 'linux-bionic'">true</TargetsLinuxBionic>
     <TargetsLinuxMusl Condition="'$(PortableOS)' == 'linux-musl'">true</TargetsLinuxMusl>
     <TargetsLinuxGlibc Condition="'$(TargetsLinux)' == 'true' and '$(TargetsLinuxMusl)' != 'true' and '$(TargetsLinuxBionic)' != 'true'">true</TargetsLinuxGlibc>
@@ -59,10 +60,11 @@
     <TargetsiOSSimulator Condition="'$(TargetOS)' == 'iossimulator'">true</TargetsiOSSimulator>
     <TargetstvOSSimulator Condition="'$(TargetOS)' == 'tvossimulator'">true</TargetstvOSSimulator>
     <TargetsAndroid Condition="'$(TargetOS)' == 'android'">true</TargetsAndroid>
+    <TargetsOpenHarmony Condition="'$(TargetOS)' == 'openharmony'">true</TargetsOpenHarmony>
     <TargetsBrowser Condition="'$(TargetOS)' == 'browser'">true</TargetsBrowser>
     <TargetsWasi Condition="'$(TargetOS)' == 'wasi'">true</TargetsWasi>
     <TargetsWindows Condition="'$(TargetOS)' == 'windows'">true</TargetsWindows>
-    <TargetsUnix Condition="'$(TargetsOpenBSD)' == 'true' or '$(TargetsFreeBSD)' == 'true' or '$(Targetsillumos)' == 'true' or '$(TargetsSolaris)' == 'true' or '$(TargetsHaiku)' == 'true' or '$(TargetsLinux)' == 'true' or '$(TargetsNetBSD)' == 'true' or '$(TargetsOSX)' == 'true' or '$(TargetsMacCatalyst)' == 'true' or '$(TargetstvOS)' == 'true' or '$(TargetsiOS)' == 'true' or '$(TargetsAndroid)' == 'true'">true</TargetsUnix>
+    <TargetsUnix Condition="'$(TargetsOpenBSD)' == 'true' or '$(TargetsFreeBSD)' == 'true' or '$(Targetsillumos)' == 'true' or '$(TargetsSolaris)' == 'true' or '$(TargetsHaiku)' == 'true' or '$(TargetsLinux)' == 'true' or '$(TargetsNetBSD)' == 'true' or '$(TargetsOSX)' == 'true' or '$(TargetsMacCatalyst)' == 'true' or '$(TargetstvOS)' == 'true' or '$(TargetsiOS)' == 'true' or '$(TargetsAndroid)' == 'true' or '$(TargetsOpenHarmony)' == 'true'">true</TargetsUnix>
   </PropertyGroup>
   <PropertyGroup>
     <_ImportedRuntimeIdentifierProps>true</_ImportedRuntimeIdentifierProps>

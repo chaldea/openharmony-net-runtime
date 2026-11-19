@@ -16,6 +16,8 @@
   </PropertyGroup>
 
   <PropertyGroup>
+    <LibraryTargetFramework>$(NetCoreAppCurrent)-$(TargetOS)</LibraryTargetFramework>
+    <LibraryTargetFramework Condition="'$(TargetsOpenHarmony)' == 'true'">$(NetCoreAppCurrent)-unix</LibraryTargetFramework>
     <BeforeTargetFrameworkInferenceTargets>$(RepositoryEngineeringDir)BeforeTargetFrameworkInference.targets</BeforeTargetFrameworkInferenceTargets>
     <GeneratePlatformNotSupportedAssemblyHeaderFile>$(RepositoryEngineeringDir)LicenseHeader.txt</GeneratePlatformNotSupportedAssemblyHeaderFile>
   </PropertyGroup>
