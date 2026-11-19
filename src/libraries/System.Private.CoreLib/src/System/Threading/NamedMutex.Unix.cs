@@ -88,15 +88,10 @@ namespace System.Threading
         // On Haiku, robust mutexes are WIP. See https://github.com/dotnet/runtime/pull/126701#issuecomment-4334338213.
         // On Linux arm and arm64, we do not use PThread mutex-backed named mutexes for compatibility with previous .NET versions.
         private static bool UsePThreadMutexes =>
-#if TARGET_OPENHARMONY
-            // The OHOS libc does not export robust pthread mutex functions. Use the file-lock implementation.
-            false;
-#else
 #if (TARGET_ARM || TARGET_ARM64)
             !OperatingSystem.IsLinux() &&
 #endif
             !OperatingSystem.IsApplePlatform() && !OperatingSystem.IsFreeBSD() && !OperatingSystem.IsOpenBSD() && !OperatingSystem.IsHaiku();
-#endif
 
         private readonly SharedMemoryProcessDataHeader<NamedMutexProcessDataBase> _processDataHeader = header;
         protected nuint _lockCount;
