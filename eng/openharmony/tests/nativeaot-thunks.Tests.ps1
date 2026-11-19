@@ -1,7 +1,7 @@
 $script:repoRoot = (Resolve-Path (Join-Path $PSScriptRoot '..\..\..')).Path
 
 Describe 'OpenHarmony NativeAOT thunk and PAL contracts' {
-    It 'initializes every .NET10 thunk mapping out parameter and reports E_POINTER' {
+    It 'initializes every thunk mapping out parameter and reports E_POINTER' {
         $source = Get-Content -LiteralPath (Join-Path $repoRoot 'src\coreclr\nativeaot\Runtime\ThunksMapping.cpp') -Raw
 
         ([regex]::Matches($source, 'if \(ppThunksSection == nullptr\)')).Count | Should -Be 3

@@ -109,6 +109,16 @@ function New-OpenHarmonyBuildInvocation {
     $llvmBin = Split-Path $Sdk.Clang
     $cmakeBin = Split-Path $Sdk.CMake
     $pathValue = "$cmakeBin$([IO.Path]::PathSeparator)$llvmBin$([IO.Path]::PathSeparator)$env:PATH"
+    if ($env:OS -eq 'Windows_NT') {
+        # .NET 11 privatizes its bundled libunwind through a POSIX shell script.
+        $gitRoot = Split-Path (Split-Path (Get-Command git.exe -ErrorAction Stop).Source)
+        $gitShell = Join-Path $gitRoot 'usr/bin'
+        if (-not (Test-Path (Join-Path $gitShell 'sh.exe'))) {
+            throw 'Git for Windows with usr/bin/sh.exe is required to build NativeAOT libunwind.'
+        }
+        # GNU sort must precede Windows' incompatible sort.exe as well.
+        $pathValue = "$cmakeBin;$llvmBin;$gitShell;$env:PATH"
+    }
 
     [PSCustomObject][ordered]@{
         Command = Join-Path $RepoRoot 'build.cmd'

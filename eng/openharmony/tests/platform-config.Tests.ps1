@@ -33,6 +33,8 @@ Describe 'OpenHarmony runtime platform configuration' {
 
     It 'selects complete Unix library implementations for OpenHarmony' {
         $dotnet = Join-Path $repoRoot '.dotnet\dotnet.exe'
+        Push-Location $repoRoot
+        try {
         $projects = @(
             (Join-Path $repoRoot 'src\libraries\sfx-src.proj'),
             (Join-Path $repoRoot 'src\libraries\shims\System\src\System.csproj')
@@ -48,6 +50,8 @@ Describe 'OpenHarmony runtime platform configuration' {
             $binPlace = ($binPlaceOutput -join [Environment]::NewLine) | ConvertFrom-Json
             @($binPlace.Items.BinPlaceTargetFrameworks.Identity | Select-Object -Unique) | Should -Be @('net11.0-unix')
         }
+        }
+        finally { Pop-Location }
     }
 
     It 'uses the official OHOS toolchain in Windows and Unix CMake entry points' {
@@ -96,7 +100,7 @@ Describe 'OpenHarmony runtime platform configuration' {
 
         $nativeAot | Should -Match 'CLR_CMAKE_TARGET_ANDROID OR CLR_CMAKE_TARGET_OPENHARMONY'
         $nativeAot | Should -Match 'FEATURE_EMULATED_TLS'
-        $vm | Should -Match 'CLR_CMAKE_TARGET_ANDROID OR CLR_CMAKE_TARGET_OPENHARMONY'
+        $vm | Should -Match 'CLR_CMAKE_TARGET_ANDROID OR CLR_CMAKE_TARGET_OPENBSD OR CLR_CMAKE_TARGET_OPENHARMONY'
         $vm | Should -Match 'FEATURE_EMULATED_TLS'
     }
 
